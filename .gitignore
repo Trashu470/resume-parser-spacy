@@ -1,0 +1,29 @@
+# Ignore python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environment
+venv/
+env/
+
+# Ignore model folders and large files
+best_ner_model/
+model/
+*.zip
+*.bin
+*.h5
+*.pth
+*.pt
+*.whl
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore logs
+*.log
+
+# VS Code
+.vscode/
