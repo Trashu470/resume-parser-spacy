@@ -1,22 +1,25 @@
 import streamlit as st
-import spacy
+import os, gdown, zipfile, re
 import pdfplumber
-import re
-import os, gdown, zipfile
+
+# ✅ Install spaCy model in cloud
+st.write("⚙️ Setting up model...")
+os.system("python -m spacy download en_core_web_sm")
+
+import spacy
 
 MODEL_DIR = "best_ner_model"
 
-# ✅ Download model once if not exists
+# ✅ Download custom model if not exists
 if not os.path.exists(MODEL_DIR):
-    st.warning("Downloading model... first time only, wait 1 minute 🕒")
-
+    st.warning("Downloading custom NER model... ⏳ First time only, 1 min")
     url = "https://drive.google.com/uc?id=1jbtkcctB7e-fw6Nv2hIfqrgh1iPmsUCP"
     gdown.download(url, "model.zip", quiet=False)
 
     with zipfile.ZipFile("model.zip", 'r') as zip_ref:
-        zip_ref.extractall(".")  
+        zip_ref.extractall(".")
 
-# ✅ Load NER Model
+# ✅ Load custom model
 nlp = spacy.load(MODEL_DIR)
 
 def extract_email_phone(text):
@@ -30,9 +33,8 @@ def extract_text_from_pdf(file):
     text = ""
     with pdfplumber.open(file) as pdf:
         for page in pdf.pages:
-            page_text = page.extract_text()
-            if page_text:
-                text += page_text + "\n"
+            txt = page.extract_text()
+            if txt: text += txt + "\n"
     return text
 
 def parse_resume(text):
@@ -57,20 +59,21 @@ def parse_resume(text):
         "Phone": phones,
     }
 
-st.title("Resume Parser Demo (spaCy Custom NER)")
+# 🟦 UI
+st.title("🧠 AI Resume Parser (spaCy Custom NER)")
 
-option = st.radio("Select input type:", ["Upload PDF", "Paste Text"])
+option = st.radio("Select input method:", ["Upload PDF", "Paste Text"])
 
 if option == "Upload PDF":
     pdf_file = st.file_uploader("Upload Resume PDF", type="pdf")
     if pdf_file:
         text = extract_text_from_pdf(pdf_file)
-        result = parse_resume(text)
-        st.json(result)
-else:
-    resume_text = st.text_area("Paste Resume Text")
-    if st.button("Parse"):
-        result = parse_resume(resume_text)
-        st.json(result)
+        st.subheader("📤 Extracted Output")
+        st.json(parse_resume(text))
 
+else:
+    resume_text = st.text_area("Paste Resume Text Here")
+    if st.button("Parse"):
+        st.subheader("📤 Extracted Output")
+        st.json(parse_resume(resume_text))
 
