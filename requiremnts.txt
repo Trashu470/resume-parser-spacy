@@ -1,4 +1,5 @@
+spacy==3.7.2
 streamlit==1.28.2
-spacy==3.7.4
 gdown
 pdfplumber
+regex
