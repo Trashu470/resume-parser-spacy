@@ -1,4 +1,7 @@
-streamlit
-spacy
-pdfplumber
 gdown
+spacy==3.7.5
+streamlit==1.28.2
+pandas
+python-docx
+pdfplumber
+requests
