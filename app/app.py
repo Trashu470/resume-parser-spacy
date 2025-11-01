@@ -2,7 +2,10 @@ import streamlit as st
 import spacy
 import pdfplumber
 import re
-import os, gdown, zipfile
+import os, gdown, zipfile, subprocess
+
+# install spaCy model if not exists
+subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"])
 
 MODEL_DIR = "best_ner_model"
 
@@ -68,3 +71,4 @@ else:
     if st.button("Parse"):
         result = parse_resume(resume_text)
         st.json(result)
+
