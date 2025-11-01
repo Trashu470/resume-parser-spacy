@@ -2,21 +2,21 @@ import streamlit as st
 import spacy
 import pdfplumber
 import re
-import os, gdown, zipfile, subprocess
-
-# install spaCy model if not exists
-subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"])
+import os, gdown, zipfile
 
 MODEL_DIR = "best_ner_model"
 
+# ✅ Download model once if not exists
 if not os.path.exists(MODEL_DIR):
-    st.warning("Downloading model... first time only, wait 1-2 minutes.")
+    st.warning("Downloading model... first time only, wait 1 minute 🕒")
+
     url = "https://drive.google.com/uc?id=1jbtkcctB7e-fw6Nv2hIfqrgh1iPmsUCP"
     gdown.download(url, "model.zip", quiet=False)
 
     with zipfile.ZipFile("model.zip", 'r') as zip_ref:
-        zip_ref.extractall(".")  # model extracted to best_ner_model folder
+        zip_ref.extractall(".")  
 
+# ✅ Load NER Model
 nlp = spacy.load(MODEL_DIR)
 
 def extract_email_phone(text):
@@ -38,6 +38,7 @@ def extract_text_from_pdf(file):
 def parse_resume(text):
     doc = nlp(text)
     entities = {"PERSON": [], "DEGREE": [], "COLLEGE": [], "EXPERIENCE": [], "SKILLS": [], "CTC": [], "ORG": []}
+    
     for ent in doc.ents:
         if ent.label_ in entities:
             entities[ent.label_].append(ent.text)
@@ -56,7 +57,7 @@ def parse_resume(text):
         "Phone": phones,
     }
 
-st.title("Resume Parser Demo ( NER )")
+st.title("Resume Parser Demo (spaCy Custom NER)")
 
 option = st.radio("Select input type:", ["Upload PDF", "Paste Text"])
 
@@ -71,4 +72,5 @@ else:
     if st.button("Parse"):
         result = parse_resume(resume_text)
         st.json(result)
+
 
