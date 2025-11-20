@@ -46,7 +46,7 @@ It automatically extracts structured information from resumes with high accuracy
 resume-parser-spacy/
  ┣ app/
  ┃ ┗ app.py
- ┣ model/        # trained model goes here (not in repo)
+ ┣ model/        # trained model 
  ┣ data/         # training data (local only)
  ┣ README.md
  ┣ requirements.txt
